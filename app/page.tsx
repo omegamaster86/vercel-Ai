@@ -1,163 +1,106 @@
 'use client';
 
-import { useState } from 'react';
+import { DefaultChatTransport, type UIMessage } from 'ai';
+import { useChat } from '@ai-sdk/react';
+import { useState, type ChangeEvent, type FormEvent } from 'react';
 
-interface Message {
-  id: string;
-  role: 'user' | 'assistant';
-  content: string;
-}
+const transport = new DefaultChatTransport({
+  api: '/api/chat',
+});
+
+const renderPart = (part: UIMessage['parts'][number], index: number) => {
+  if (part.type === 'text' || part.type === 'reasoning') {
+    return (
+      <p key={index} className="whitespace-pre-wrap">
+        {part.text}
+      </p>
+    );
+  }
+
+  if (part.type === 'source-url') {
+    return (
+      <a
+        key={index}
+        href={part.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="block text-sm text-blue-600 underline wrap-break-word"
+      >
+        {part.title ?? part.url}
+      </a>
+    );
+  }
+
+  if (part.type === 'source-document') {
+    return (
+      <div key={index} className="text-sm">
+        {part.title}
+      </div>
+    );
+  }
+
+  if ('output' in part && part.output !== undefined) {
+    const content =
+      typeof part.output === 'string'
+        ? part.output
+        : JSON.stringify(part.output, null, 2);
+
+    if (!content) {
+      return null;
+    }
+
+    return (
+      <pre
+        key={index}
+        className="whitespace-pre-wrap text-xs bg-gray-200 text-gray-800 rounded-md p-3 overflow-x-auto"
+      >
+        {content}
+      </pre>
+    );
+  }
+
+  if (part.type === 'file') {
+    return (
+      <div key={index} className="text-sm text-gray-600 wrap-break-word">
+        ファイル: {part.filename ?? part.url}
+      </div>
+    );
+  }
+
+  return (
+    <pre
+      key={index}
+      className="whitespace-pre-wrap text-xs text-gray-500 bg-gray-100 rounded-md p-3 overflow-x-auto"
+    >
+      {JSON.stringify(part, null, 2)}
+    </pre>
+  );
+};
 
 export default function Home() {
-  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const { messages, sendMessage, status, error, clearError } = useChat({
+    transport,
+  });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log('handleSubmit called', { input, isLoading, inputTrim: input.trim() });
-    
+  const isLoading = status === 'submitted' || status === 'streaming';
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
     if (!input.trim() || isLoading) {
-      console.log('Early return:', { inputEmpty: !input.trim(), isLoading });
       return;
     }
 
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      role: 'user',
-      content: input,
-    };
-
-    console.log('Sending message:', userMessage);
-    setMessages((prev) => [...prev, userMessage]);
+    await sendMessage({ text: input });
     setInput('');
-    setIsLoading(true);
+  };
 
-    try {
-      const requestBody = {
-        messages: [...messages, userMessage].map(({ role, content }) => ({
-          role,
-          content,
-        })),
-      };
-      console.log('Fetching /api/chat with:', requestBody);
-      
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestBody),
-      });
-      
-      console.log('Response received:', response.status, response.statusText);
-      console.log('Response headers:', Object.fromEntries(response.headers.entries()));
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('API Error:', response.status, errorText);
-        throw new Error(`API Error: ${response.status} ${errorText}`);
-      }
-
-      if (!response.body) {
-        console.error('Response body is null!');
-        throw new Error('Response body is null');
-      }
-
-      console.log('Response body exists, starting to read stream...');
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-      let assistantContent = '';
-
-      const assistantMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        role: 'assistant',
-        content: '',
-      };
-
-      setMessages((prev) => [...prev, assistantMessage]);
-
-      let chunkCount = 0;
-      while (true) {
-        console.log(`Reading chunk ${chunkCount}...`);
-        const { done, value } = await reader.read();
-        console.log(`Chunk ${chunkCount} read:`, { done, valueLength: value?.length });
-        
-        if (done) {
-          console.log('Stream finished');
-          break;
-        }
-
-        const chunk = decoder.decode(value, { stream: true });
-        console.log(`Raw chunk ${chunkCount}:`, JSON.stringify(chunk));
-        chunkCount++;
-        
-        // AI SDKのtoTextStreamResponseは、各行が直接テキストデータか、SSEフォーマット
-        // まず、SSEフォーマット (data: で始まる) を試す
-        const lines = chunk.split('\n');
-        
-        for (const line of lines) {
-          if (!line.trim()) continue;
-          
-          console.log('Processing line:', line);
-          
-          // SSEフォーマット: "data: 0:テキスト"
-          if (line.startsWith('data: ')) {
-            const data = line.slice(6); // "data: "を削除
-            if (data.startsWith('0:')) {
-              const text = data.slice(2);
-              assistantContent += text;
-              setMessages((prev) => {
-                const updated = [...prev];
-                updated[updated.length - 1] = {
-                  ...updated[updated.length - 1],
-                  content: assistantContent,
-                };
-                return updated;
-              });
-            }
-          }
-          // 直接フォーマット: "0:テキスト"
-          else if (line.startsWith('0:')) {
-            const text = line.slice(2);
-            assistantContent += text;
-            setMessages((prev) => {
-              const updated = [...prev];
-              updated[updated.length - 1] = {
-                ...updated[updated.length - 1],
-                content: assistantContent,
-              };
-              return updated;
-            });
-          }
-          // プレーンテキストの可能性
-          else if (!line.startsWith(':') && !line.startsWith('event:')) {
-            // テキストデータの可能性
-            assistantContent += line;
-            setMessages((prev) => {
-              const updated = [...prev];
-              updated[updated.length - 1] = {
-                ...updated[updated.length - 1],
-                content: assistantContent,
-              };
-              return updated;
-            });
-          }
-        }
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: Date.now().toString(),
-          role: 'assistant',
-          content: 'エラーが発生しました。もう一度お試しください。',
-        },
-      ]);
-    } finally {
-      setIsLoading(false);
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    if (error) {
+      clearError();
     }
+    setInput(event.target.value);
   };
 
   return (
@@ -182,7 +125,7 @@ export default function Home() {
             </div>
           )}
 
-          {messages.map((message) => (
+          {messages.map((message: UIMessage) => (
             <div
               key={message.id}
               className={`flex ${
@@ -196,7 +139,11 @@ export default function Home() {
                     : 'bg-gray-100 text-gray-800'
                 }`}
               >
-                <div className="whitespace-pre-wrap">{message.content}</div>
+                <div className="space-y-2">
+                  {message.parts.length > 0
+                    ? message.parts.map((part, index) => renderPart(part, index))
+                    : null}
+                </div>
               </div>
             </div>
           ))}
@@ -220,16 +167,7 @@ export default function Home() {
           <div className="flex gap-2">
             <input
               value={input}
-              onChange={(e) => {
-                console.log('Input changed:', e.target.value);
-                setInput(e.target.value);
-              }}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                  e.preventDefault();
-                  handleSubmit(e as unknown as React.FormEvent);
-                }
-              }}
+              onChange={handleInputChange}
               placeholder="メッセージを入力..."
               className="flex-1 rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               disabled={isLoading}
@@ -242,6 +180,11 @@ export default function Home() {
               送信
             </button>
           </div>
+          {error && (
+            <p className="mt-2 text-sm text-red-500">
+              {error instanceof Error ? error.message : 'エラーが発生しました。'}
+            </p>
+          )}
         </form>
       </footer>
     </div>
