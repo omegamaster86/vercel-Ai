@@ -1,34 +1,58 @@
 import { createAnthropic } from '@ai-sdk/anthropic';
+import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { convertToModelMessages, streamText } from 'ai';
 
 const anthropic = createAnthropic({
   apiKey: process.env.ANTHROPIC_API_KEY || '',
 });
 
+const google = process.env.GOOGLE_API_KEY
+  ? createGoogleGenerativeAI({
+      apiKey: process.env.GOOGLE_API_KEY,
+    })
+  : null;
+
 export async function POST(req: Request) {
   try {
     const { messages } = await req.json();
 
-    if (!process.env.ANTHROPIC_API_KEY) {
-      return new Response(
-        JSON.stringify({ error: 'ANTHROPIC_API_KEYが設定されていません' }),
-        { status: 500, headers: { 'Content-Type': 'application/json' } }
-      );
-    }
-
-    const modelId = 'claude-3-haiku-20240307';
     const uiMessages = Array.isArray(messages) ? messages : [];
     const modelMessages = convertToModelMessages(
       uiMessages.map(({ id, ...rest }) => rest)
     );
 
-    const result = streamText({
-      model: anthropic(modelId),
+    if (google) {
+      try {
+        console.log('[chat] Using GOOGLE_API_KEY (Gemini provider).');
+        const googleResult = streamText({
+          model: google('gemini-2.0-flash-001'),
+          messages: modelMessages,
+        });
+
+        return googleResult.toUIMessageStreamResponse();
+      } catch (googleError) {
+        console.error('Google Generative AI 呼び出しに失敗したためAnthropicにフォールバックします', googleError);
+      }
+    }
+
+    if (!process.env.ANTHROPIC_API_KEY) {
+      return new Response(
+        JSON.stringify({
+          error: 'すべてのプロバイダ呼び出しに失敗しました',
+          details: 'ANTHROPIC_API_KEYが設定されていません',
+        }),
+        { status: 500, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    console.log('[chat] Using ANTHROPIC_API_KEY (Claude provider).');
+    const anthropicResult = streamText({
+      model: anthropic('claude-3-haiku-20240307'),
       messages: modelMessages,
     });
 
     // AI SDK UI互換のレスポンスを返却
-    return result.toUIMessageStreamResponse();
+    return anthropicResult.toUIMessageStreamResponse();
   } catch (error) {
     return new Response(
       JSON.stringify({ 
