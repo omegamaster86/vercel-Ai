@@ -1,5 +1,5 @@
 import { createAnthropic } from '@ai-sdk/anthropic';
-import { streamText } from 'ai';
+import { convertToModelMessages, streamText } from 'ai';
 
 const anthropic = createAnthropic({
   apiKey: process.env.ANTHROPIC_API_KEY || '',
@@ -16,24 +16,19 @@ export async function POST(req: Request) {
       );
     }
 
-    const modelId = 'claude-3-haiku-20240307';    
+    const modelId = 'claude-3-haiku-20240307';
+    const uiMessages = Array.isArray(messages) ? messages : [];
+    const modelMessages = convertToModelMessages(
+      uiMessages.map(({ id, ...rest }) => rest)
+    );
+
     const result = streamText({
       model: anthropic(modelId),
-      messages,
+      messages: modelMessages,
     });
 
-    const textStream = result.textStream;
-    
-    if (!textStream) {
-      return new Response(
-        JSON.stringify({ error: 'ストリームの生成に失敗しました' }),
-        { status: 500, headers: { 'Content-Type': 'application/json' } }
-      );
-    }
-    
-    // AI SDKの標準メソッドを使用
-    const response = result.toTextStreamResponse();
-    return response;
+    // AI SDK UI互換のレスポンスを返却
+    return result.toUIMessageStreamResponse();
   } catch (error) {
     return new Response(
       JSON.stringify({ 
