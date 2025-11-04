@@ -37,26 +37,8 @@ export default function Home() {
       </aside>
 
       <div className="flex flex-1 flex-col">
-        <header className="border-b border-gray-200 bg-white px-4 py-4 md:hidden">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
-                AIツール
-              </p>
-              <h1 className="text-lg font-bold text-gray-900">ダッシュボード</h1>
-            </div>
-            <Link
-              href="/web-search"
-              className="rounded-lg border border-gray-200 px-3 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
-            >
-              Web検索チャット
-            </Link>
-          </div>
-        </header>
-
         <main className="flex-1 p-6">
           <section className="max-w-3xl">
-            <h2 className="text-2xl font-bold text-gray-900">はじめましょう</h2>
             <p className="mt-2 text-sm text-gray-600">
               サイドバーかカードをクリックすると対応する体験へ移動できます。
             </p>
