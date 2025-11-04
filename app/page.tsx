@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import { Sidebar, type SidebarItem } from './components/Sidebar';
+import { Sidebar } from './components/Sidebar';
+import type { SidebarItem } from '@/types';
 
 const tools: SidebarItem[] = [
   {

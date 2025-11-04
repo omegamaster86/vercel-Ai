@@ -1,17 +1,5 @@
 import Link from 'next/link';
-
-export type SidebarItem = {
-  title: string;
-  description?: string;
-  href: string;
-};
-
-type SidebarProps = {
-  heading: string;
-  subheading: string;
-  items: SidebarItem[];
-  className?: string;
-};
+import type { SidebarProps } from '@/types';
 
 export function Sidebar({ heading, subheading, items, className }: SidebarProps) {
   const classes = [
