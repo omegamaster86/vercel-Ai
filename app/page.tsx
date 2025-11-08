@@ -8,6 +8,11 @@ const tools: SidebarItem[] = [
     description: 'Claudeを使ってリアルタイム検索しながら会話できます',
     href: '/web-search',
   },
+  {
+    title: 'revalidateTag 検証',
+    description: 'キャッシュタグの再検証とサーバーアクションの挙動を確認するデモ',
+    href: '/revalidate-tag',
+  },
 ];
 
 export default function Home() {
