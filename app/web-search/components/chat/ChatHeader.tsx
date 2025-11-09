@@ -1,7 +1,4 @@
-type ChatHeaderProps = {
-  title: string;
-  description?: string;
-};
+import type { ChatHeaderProps } from '@/types';
 
 export function ChatHeader({ title, description }: ChatHeaderProps) {
   return (
