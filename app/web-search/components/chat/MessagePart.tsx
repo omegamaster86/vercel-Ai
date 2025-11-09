@@ -3,9 +3,7 @@ import ReactMarkdown from 'react-markdown';
 import type { Components } from 'react-markdown';
 import Link from 'next/link';
 
-type MessagePartProps = {
-  part: UIMessage['parts'][number];
-};
+import type { MessagePartProps } from '@/types';
 
 const mergeClassName = (base: string, className?: string) =>
   className ? `${base} ${className}` : base;
