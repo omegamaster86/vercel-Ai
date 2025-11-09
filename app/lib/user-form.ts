@@ -1,28 +1,11 @@
 /**
  * ユーザー更新フォームのバリデーションと初期状態を提供するユーティリティ。
  */
-import type { UserUpdateInput } from "./user-store";
-
-export type UpdateUserFormState = {
-  status: "idle" | "success" | "error";
-  message: string;
-  refreshedAt?: string;
-};
-
-type UpdateUserFormValidationSuccess = {
-  kind: "success";
-  id: string;
-  payload: UserUpdateInput;
-};
-
-type UpdateUserFormValidationError = {
-  kind: "error";
-  formState: UpdateUserFormState;
-};
-
-export type UpdateUserFormValidationResult =
-  | UpdateUserFormValidationSuccess
-  | UpdateUserFormValidationError;
+import type {
+  UpdateUserFormState,
+  UpdateUserFormValidationResult,
+  UserUpdateInput,
+} from "@/types";
 
 const ALLOWED_ROLES = new Set<UserUpdateInput["role"]>(["admin", "member"]);
 
