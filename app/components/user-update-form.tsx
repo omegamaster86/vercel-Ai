@@ -6,26 +6,12 @@
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 
-import {
-  createInitialUpdateState,
-  type UpdateUserFormState,
-} from "@/app/lib/user-form";
-
-type UpdateUserAction = (
-  prevState: UpdateUserFormState | undefined,
-  formData: FormData,
-) => Promise<UpdateUserFormState>;
-
-type Props = {
-  userId: string;
-  defaults: {
-    name: string;
-    email: string;
-    bio: string;
-    role: "admin" | "member";
-  };
-  action: UpdateUserAction;
-};
+import { createInitialUpdateState } from "@/app/lib/user-form";
+import type {
+  UpdateUserAction,
+  UpdateUserFormState,
+  UserUpdateFormProps,
+} from "@/types";
 
 const fieldClass =
   "w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500";
@@ -34,7 +20,11 @@ const fieldClass =
  * ユーザー情報を編集するフォーム。
  * @remarks `useActionState` を用いてサーバーアクションの結果を受け取り、メッセージを表示する。
  */
-export function UserUpdateForm({ userId, defaults, action }: Props) {
+export function UserUpdateForm({
+  userId,
+  defaults,
+  action,
+}: UserUpdateFormProps) {
   const [state, formAction] = useActionState<UpdateUserFormState, FormData>(
     action,
     createInitialUpdateState(),
