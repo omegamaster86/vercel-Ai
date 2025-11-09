@@ -1,12 +1,4 @@
-import type { ChangeEvent, FormEvent } from 'react';
-
-type ChatInputFormProps = {
-  input: string;
-  onSubmit: (event: FormEvent<HTMLFormElement>) => void;
-  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
-  isLoading: boolean;
-  errorMessage?: string;
-};
+import type { ChatInputFormProps } from '@/types';
 
 export function ChatInputForm({
   input,
