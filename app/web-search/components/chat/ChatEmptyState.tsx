@@ -1,7 +1,4 @@
-type ChatEmptyStateProps = {
-  title: string;
-  examples?: string[];
-};
+import type { ChatEmptyStateProps } from "@/types";
 
 export function ChatEmptyState({ title, examples }: ChatEmptyStateProps) {
   return (
