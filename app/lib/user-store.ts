@@ -1,13 +1,4 @@
-export type UserRecord = {
-  id: string;
-  name: string;
-  email: string;
-  role: 'admin' | 'member';
-  bio: string;
-  updatedAt: string;
-};
-
-export type UserUpdateInput = Partial<Omit<UserRecord, 'id' | 'updatedAt'>>;
+import type { UserRecord, UserUpdateInput } from "@/types";
 
 const seedUser: UserRecord = {
   id: '1',
