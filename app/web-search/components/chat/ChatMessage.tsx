@@ -1,9 +1,6 @@
-import type { UIMessage } from 'ai';
 import { MessagePart } from './MessagePart';
 
-type ChatMessageProps = {
-  message: UIMessage;
-};
+import type { ChatMessageProps } from '@/types';
 
 export function ChatMessage({ message }: ChatMessageProps) {
   const isUser = message.role === 'user';
