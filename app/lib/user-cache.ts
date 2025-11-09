@@ -3,7 +3,8 @@
  */
 import { unstable_cache } from "next/cache";
 
-import { getUser, type UserRecord } from "@/app/lib/user-store";
+import { getUser } from "@/app/lib/user-store";
+import type { UserRecord } from "@/types";
 
 const getUserCachedFactory = (id: string) =>
   unstable_cache(async () => getUser(id), ["user", id], {
