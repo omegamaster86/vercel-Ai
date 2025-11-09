@@ -1,21 +1,28 @@
 /**
  * ユーザーデータのキャッシュ取得ロジックをまとめたユーティリティ。
+ * 
+ * Next.js 16 の `use cache` ディレクティブと `cacheTag` API を使用して
+ * タグ機能（`revalidateTag` / `updateTag`）をサポートしています。
  */
-import { unstable_cache } from "next/cache";
+import { cacheTag } from "next/cache";
 
 import { getUser } from "@/app/lib/user-store";
 import type { UserRecord } from "@/types";
 
-const getUserCachedFactory = (id: string) =>
-  unstable_cache(async () => getUser(id), ["user", id], {
-    tags: [`user:${id}`],
-  });
-
 /**
  * ユーザーデータをキャッシュ経由で取得する。
+ * 
+ * `use cache` ディレクティブを使用してキャッシュし、
+ * `cacheTag` でタグを設定することで、`revalidateTag` や `updateTag` と
+ * 統合されたキャッシュ無効化をサポートしています。
+ * 
  * @param id - ユーザーID
  * @returns キャッシュ済みのユーザーレコード
  */
 export async function getCachedUser(id: string): Promise<UserRecord> {
-  return getUserCachedFactory(id)();
+  "use cache";
+  
+  cacheTag(`user:${id}`);
+  
+  return getUser(id);
 }
