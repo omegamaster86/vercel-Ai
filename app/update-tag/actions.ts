@@ -1,11 +1,10 @@
 "use server";
 
 import { updateTag } from "next/cache";
-import {
-  parseUpdateUserFormData,
-  type UpdateUserFormState,
-} from "@/app/lib/user-form";
+
+import { parseUpdateUserFormData } from "@/app/lib/user-form";
 import { updateUser } from "@/app/lib/user-store";
+import type { UpdateUserFormState } from "@/types";
 
 export async function updateUserWithUpdateTagAction(
   _prevState: UpdateUserFormState | undefined,
