@@ -1,17 +1,26 @@
-import Link from 'next/link';
-import { Sidebar } from './components/Sidebar';
-import type { SidebarItem } from '@/types';
+/**
+ * ダッシュボードトップページ。各種デモ機能へのリンクを表示する。
+ */
+import Link from "next/link";
+import type { SidebarItem } from "@/types";
+import { Sidebar } from "./components/Sidebar";
 
 const tools: SidebarItem[] = [
   {
-    title: 'Web検索チャット',
-    description: 'Claudeを使ってリアルタイム検索しながら会話できます',
-    href: '/web-search',
+    title: "Web検索チャット",
+    description: "Claudeを使ってリアルタイム検索しながら会話できます",
+    href: "/web-search",
   },
   {
-    title: 'revalidateTag 検証',
-    description: 'キャッシュタグの再検証とサーバーアクションの挙動を確認するデモ',
-    href: '/revalidate-tag',
+    title: "revalidateTag 検証",
+    description:
+      "キャッシュタグの再検証とサーバーアクションの挙動を確認するデモ",
+    href: "/revalidate-tag",
+  },
+  {
+    title: "updateTag 検証",
+    description: "updateTag を使った read-your-own-writes を確認するデモ",
+    href: "/update-tag",
   },
 ];
 
@@ -33,7 +42,9 @@ export default function Home() {
                   <h3 className="text-lg font-semibold text-gray-900 group-hover:text-gray-900">
                     {tool.title}
                   </h3>
-                  <p className="mt-3 text-sm text-gray-600">{tool.description}</p>
+                  <p className="mt-3 text-sm text-gray-600">
+                    {tool.description}
+                  </p>
                 </div>
                 <span className="mt-6 inline-flex items-center text-sm font-semibold text-blue-600 transition group-hover:text-blue-700">
                   使ってみる
