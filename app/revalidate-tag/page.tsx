@@ -1,6 +1,7 @@
 /**
  * `revalidateTag` の挙動を検証するサンプルページ。
  */
+import { headers } from "next/headers";
 import Link from "next/link";
 
 import { UserUpdateForm } from "@/app/components/user-update-form";
@@ -15,6 +16,8 @@ export const metadata = {
 
 export default async function RevalidateTagDemoPage() {
   const user = await getCachedUser(USER_ID);
+  // `use cache` を使用する場合、`new Date()` の前に Request data にアクセスする必要がある
+  await headers();
   const renderTimestamp = new Date().toISOString();
 
   return (
@@ -35,7 +38,7 @@ export default async function RevalidateTagDemoPage() {
               revalidateTag の検証
             </h1>
             <p className="text-sm text-gray-600">
-              このページは <code>unstable_cache</code> と{" "}
+              このページは <code>use cache</code> と{" "}
               <code>revalidateTag</code>{" "}
               を組み合わせて、ユーザーデータのキャッシュを無効化する手順を検証するためのサンプルです。
             </p>
@@ -50,7 +53,7 @@ export default async function RevalidateTagDemoPage() {
               </h2>
               <p className="mt-1 text-sm text-gray-500">
                 タグ <code>{`user:${USER_ID}`}</code> に紐づいたデータを{" "}
-                <code>unstable_cache</code>{" "}
+                <code>use cache</code>{" "}
                 から取得し、サーバーレンダリング時刻を表示しています。
               </p>
             </div>
@@ -91,7 +94,7 @@ export default async function RevalidateTagDemoPage() {
                 サーバーでの再計算: {new Date(renderTimestamp).toLocaleString()}
               </p>
               <p>
-                キャッシュキー: <code>{`['user', '${USER_ID}']`}</code>
+                キャッシュキー: <code>{`getCachedUser('${USER_ID}')`}</code>
               </p>
               <p>
                 タグ: <code>{`user:${USER_ID}`}</code>
