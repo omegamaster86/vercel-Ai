@@ -2,6 +2,7 @@
  * `revalidateTag` の挙動を検証するサンプルページ。
  */
 import { headers } from "next/headers";
+import { Suspense } from "react";
 import Link from "next/link";
 
 import { UserUpdateForm } from "@/app/components/user-update-form";
@@ -14,38 +15,14 @@ export const metadata = {
   title: "revalidateTag 検証",
 };
 
-export default async function RevalidateTagDemoPage() {
-  const user = await getCachedUser(USER_ID);
+async function UserContent() {
   // `use cache` を使用する場合、`new Date()` の前に Request data にアクセスする必要がある
   await headers();
+  const user = await getCachedUser(USER_ID);
   const renderTimestamp = new Date().toISOString();
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6 md:p-10">
-      <div className="mx-auto max-w-5xl space-y-8">
-        <header className="space-y-4">
-          <Link
-            href="/"
-            className="inline-flex items-center text-sm text-blue-600 hover:underline"
-          >
-            ← ダッシュボードに戻る
-          </Link>
-          <div className="space-y-2">
-            <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
-              Cache Tag Demo
-            </p>
-            <h1 className="text-3xl font-bold text-gray-900">
-              revalidateTag の検証
-            </h1>
-            <p className="text-sm text-gray-600">
-              このページは <code>use cache</code> と{" "}
-              <code>revalidateTag</code>{" "}
-              を組み合わせて、ユーザーデータのキャッシュを無効化する手順を検証するためのサンプルです。
-            </p>
-          </div>
-        </header>
-
-        <section className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+    <section className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
           <article className="space-y-4 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
             <div>
               <h2 className="text-lg font-semibold text-gray-900">
@@ -128,7 +105,39 @@ export default async function RevalidateTagDemoPage() {
               }}
             />
           </aside>
-        </section>
+    </section>
+  );
+}
+
+export default async function RevalidateTagDemoPage() {
+  return (
+    <div className="min-h-screen bg-gray-50 p-6 md:p-10">
+      <div className="mx-auto max-w-5xl space-y-8">
+        <header className="space-y-4">
+          <Link
+            href="/"
+            className="inline-flex items-center text-sm text-blue-600 hover:underline"
+          >
+            ← ダッシュボードに戻る
+          </Link>
+          <div className="space-y-2">
+            <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+              Cache Tag Demo
+            </p>
+            <h1 className="text-3xl font-bold text-gray-900">
+              revalidateTag の検証
+            </h1>
+            <p className="text-sm text-gray-600">
+              このページは <code>use cache</code> と{" "}
+              <code>revalidateTag</code>{" "}
+              を組み合わせて、ユーザーデータのキャッシュを無効化する手順を検証するためのサンプルです。
+            </p>
+          </div>
+        </header>
+
+        <Suspense fallback={<div className="text-center py-8">読み込み中...</div>}>
+          <UserContent />
+        </Suspense>
       </div>
     </div>
   );
