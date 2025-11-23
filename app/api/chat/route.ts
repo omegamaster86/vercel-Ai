@@ -23,7 +23,6 @@ export async function POST(req: Request) {
 
     if (google) {
       try {
-        console.log('[chat] Using GOOGLE_API_KEY (Gemini provider).');
         const googleResult = streamText({
           model: google('gemini-2.0-flash-001'),
           messages: modelMessages,
@@ -31,28 +30,27 @@ export async function POST(req: Request) {
 
         return googleResult.toUIMessageStreamResponse();
       } catch (googleError) {
-        console.error('Google Generative AI 呼び出しに失敗したためAnthropicにフォールバックします', googleError);
+        console.error('Google Generative AI 呼び出しに失敗しました');
       }
     }
 
-    if (!process.env.ANTHROPIC_API_KEY) {
-      return new Response(
-        JSON.stringify({
-          error: 'すべてのプロバイダ呼び出しに失敗しました',
-          details: 'ANTHROPIC_API_KEYが設定されていません',
-        }),
-        { status: 500, headers: { 'Content-Type': 'application/json' } }
-      );
-    }
+    // if (!process.env.ANTHROPIC_API_KEY) {
+    //   return new Response(
+    //     JSON.stringify({
+    //       error: 'すべてのプロバイダ呼び出しに失敗しました',
+    //       details: 'ANTHROPIC_API_KEYが設定されていません',
+    //     }),
+    //     { status: 500, headers: { 'Content-Type': 'application/json' } }
+    //   );
+    // }
 
-    console.log('[chat] Using ANTHROPIC_API_KEY (Claude provider).');
-    const anthropicResult = streamText({
-      model: anthropic('claude-3-haiku-20240307'),
-      messages: modelMessages,
-    });
+    // const anthropicResult = streamText({
+    //   model: anthropic('claude-3-haiku-20240307'),
+    //   messages: modelMessages,
+    // });
 
     // AI SDK UI互換のレスポンスを返却
-    return anthropicResult.toUIMessageStreamResponse();
+    // return anthropicResult.toUIMessageStreamResponse();
   } catch (error) {
     return new Response(
       JSON.stringify({ 
