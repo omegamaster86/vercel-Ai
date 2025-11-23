@@ -15,9 +15,9 @@ export const metadata = {
 };
 
 export default async function UpdateTagDemoPage() {
-  const user = await getCachedUser(USER_ID);
   // `use cache` を使用する場合、`new Date()` の前に Request data にアクセスする必要がある
   await headers();
+  const user = await getCachedUser(USER_ID);
   const renderTimestamp = new Date().toISOString();
 
   return (
