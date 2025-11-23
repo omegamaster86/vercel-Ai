@@ -31,9 +31,6 @@ export default async function UpdateTagDemoPage() {
             ← ダッシュボードに戻る
           </Link>
           <div className="space-y-2">
-            <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
-              Cache Tag Demo
-            </p>
             <h1 className="text-3xl font-bold text-gray-900">
               updateTag の検証
             </h1>
