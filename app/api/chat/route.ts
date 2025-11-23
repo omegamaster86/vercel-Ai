@@ -1,10 +1,10 @@
-import { createAnthropic } from '@ai-sdk/anthropic';
+// import { createAnthropic } from '@ai-sdk/anthropic';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { convertToModelMessages, streamText } from 'ai';
 
-const anthropic = createAnthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY || '',
-});
+// const anthropic = createAnthropic({
+//   apiKey: process.env.ANTHROPIC_API_KEY || '',
+// });
 
 const google = process.env.GOOGLE_API_KEY
   ? createGoogleGenerativeAI({
