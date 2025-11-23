@@ -2,7 +2,7 @@
 
 import { DefaultChatTransport } from 'ai';
 import { useChat } from '@ai-sdk/react';
-import { useState, type ChangeEvent, type FormEvent } from 'react';
+import { Suspense, useState, type ChangeEvent, type FormEvent } from 'react';
 import { ChatHeader } from './components/chat/ChatHeader';
 import { ChatEmptyState } from './components/chat/ChatEmptyState';
 import { ChatMessage } from './components/chat/ChatMessage';
@@ -13,7 +13,7 @@ const transport = new DefaultChatTransport({
   api: '/api/chat',
 });
 
-export default function WebSearchChatPage() {
+function WebSearchChatContent() {
   const [input, setInput] = useState('');
   const { messages, sendMessage, status, error, clearError } = useChat({
     transport,
@@ -76,6 +76,14 @@ export default function WebSearchChatPage() {
         errorMessage={errorMessage}
       />
     </div>
+  );
+}
+
+export default function WebSearchChatPage() {
+  return (
+    <Suspense fallback={<div className="flex min-h-screen items-center justify-center">読み込み中...</div>}>
+      <WebSearchChatContent />
+    </Suspense>
   );
 }
 
