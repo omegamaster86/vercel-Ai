@@ -195,7 +195,7 @@ export function MessagePart({ part }: MessagePartProps) {
         href={part.url}
         target="_blank"
         rel="noopener noreferrer"
-        className="block text-sm text-blue-600 underline wrap-break-word"
+        className="block w-fit text-sm text-blue-600 underline wrap-break-word"
       >
         {part.title ?? part.url}
       </Link>
@@ -231,12 +231,10 @@ export function MessagePart({ part }: MessagePartProps) {
     );
   }
 
-  // メタデータタイプ（step-start, step-finish など）は表示しない
-  if (part.type === 'step-start' || part.type === 'step-finish') {
-    return null;
-  }
-
-  // その他の未対応タイプは表示しない（デバッグ時のみ表示する場合はコメントアウト）
-  return null;
+  return (
+    <pre className="whitespace-pre-wrap text-xs text-gray-500 bg-gray-100 rounded-md p-3 overflow-x-auto">
+      {JSON.stringify(part, null, 2)}
+    </pre>
+  );
 }
 
