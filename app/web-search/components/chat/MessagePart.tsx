@@ -1,9 +1,8 @@
-import type { UIMessage } from 'ai';
-import ReactMarkdown from 'react-markdown';
-import type { Components } from 'react-markdown';
-import Link from 'next/link';
+import Link from "next/link";
+import type { Components } from "react-markdown";
+import ReactMarkdown from "react-markdown";
 
-import type { MessagePartProps } from '@/types';
+import type { MessagePartProps } from "@/types";
 
 const mergeClassName = (base: string, className?: string) =>
   className ? `${base} ${className}` : base;
@@ -14,7 +13,7 @@ const markdownComponents: Components = {
       <h1
         {...props}
         className={mergeClassName(
-          'text-2xl font-bold mb-4 mt-6 first:mt-0',
+          "text-2xl font-bold mb-4 mt-6 first:mt-0",
           className,
         )}
       >
@@ -26,7 +25,10 @@ const markdownComponents: Components = {
     return (
       <h2
         {...props}
-        className={mergeClassName('text-xl font-bold mb-3 mt-5 first:mt-0', className)}
+        className={mergeClassName(
+          "text-xl font-bold mb-3 mt-5 first:mt-0",
+          className,
+        )}
       >
         {children}
       </h2>
@@ -36,7 +38,10 @@ const markdownComponents: Components = {
     return (
       <h3
         {...props}
-        className={mergeClassName('text-lg font-semibold mb-2 mt-4 first:mt-0', className)}
+        className={mergeClassName(
+          "text-lg font-semibold mb-2 mt-4 first:mt-0",
+          className,
+        )}
       >
         {children}
       </h3>
@@ -46,7 +51,7 @@ const markdownComponents: Components = {
     return (
       <p
         {...props}
-        className={mergeClassName('mb-3 last:mb-0 leading-relaxed', className)}
+        className={mergeClassName("mb-3 last:mb-0 leading-relaxed", className)}
       >
         {children}
       </p>
@@ -56,7 +61,10 @@ const markdownComponents: Components = {
     return (
       <ul
         {...props}
-        className={mergeClassName('list-disc list-inside mb-3 space-y-1 ml-4', className)}
+        className={mergeClassName(
+          "list-disc list-inside mb-3 space-y-1 ml-4",
+          className,
+        )}
       >
         {children}
       </ul>
@@ -66,7 +74,10 @@ const markdownComponents: Components = {
     return (
       <ol
         {...props}
-        className={mergeClassName('list-decimal list-inside mb-3 space-y-1 ml-4', className)}
+        className={mergeClassName(
+          "list-decimal list-inside mb-3 space-y-1 ml-4",
+          className,
+        )}
       >
         {children}
       </ol>
@@ -74,21 +85,21 @@ const markdownComponents: Components = {
   },
   li({ children, className, ...props }) {
     return (
-      <li {...props} className={mergeClassName('leading-relaxed', className)}>
+      <li {...props} className={mergeClassName("leading-relaxed", className)}>
         {children}
       </li>
     );
   },
   strong({ children, className, ...props }) {
     return (
-      <strong {...props} className={mergeClassName('font-semibold', className)}>
+      <strong {...props} className={mergeClassName("font-semibold", className)}>
         {children}
       </strong>
     );
   },
   em({ children, className, ...props }) {
     return (
-      <em {...props} className={mergeClassName('italic', className)}>
+      <em {...props} className={mergeClassName("italic", className)}>
         {children}
       </em>
     );
@@ -105,7 +116,7 @@ const markdownComponents: Components = {
         <code
           {...rest}
           className={mergeClassName(
-            'bg-gray-200 px-1.5 py-0.5 rounded text-sm font-mono',
+            "bg-gray-200 px-1.5 py-0.5 rounded text-sm font-mono",
             className,
           )}
         >
@@ -125,7 +136,7 @@ const markdownComponents: Components = {
       <pre
         {...props}
         className={mergeClassName(
-          'bg-gray-200 rounded-md p-3 overflow-x-auto mb-3 text-sm',
+          "bg-gray-200 rounded-md p-3 overflow-x-auto mb-3 text-sm",
           className,
         )}
       >
@@ -138,7 +149,7 @@ const markdownComponents: Components = {
       <blockquote
         {...props}
         className={mergeClassName(
-          'border-l-4 border-gray-300 pl-4 italic my-3',
+          "border-l-4 border-gray-300 pl-4 italic my-3",
           className,
         )}
       >
@@ -157,7 +168,7 @@ const markdownComponents: Components = {
         target="_blank"
         rel="noopener noreferrer"
         className={mergeClassName(
-          'text-blue-600 underline hover:text-blue-800',
+          "text-blue-600 underline hover:text-blue-800",
           className,
         )}
         {...rest}
@@ -170,22 +181,24 @@ const markdownComponents: Components = {
     return (
       <hr
         {...props}
-        className={mergeClassName('my-4 border-gray-300', className)}
+        className={mergeClassName("my-4 border-gray-300", className)}
       />
     );
   },
 };
 
 export function MessagePart({ part }: MessagePartProps) {
-  if (part.type === 'text' || part.type === 'reasoning') {
+  if (part.type === "text" || part.type === "reasoning") {
     return (
       <div className="prose prose-sm max-w-none">
-        <ReactMarkdown components={markdownComponents}>{part.text}</ReactMarkdown>
+        <ReactMarkdown components={markdownComponents}>
+          {part.text}
+        </ReactMarkdown>
       </div>
     );
   }
 
-  if (part.type === 'source-url') {
+  if (part.type === "source-url") {
     if (!part.url) {
       return null;
     }
@@ -202,13 +215,13 @@ export function MessagePart({ part }: MessagePartProps) {
     );
   }
 
-  if (part.type === 'source-document') {
+  if (part.type === "source-document") {
     return <div className="text-sm">{part.title}</div>;
   }
 
-  if ('output' in part && part.output !== undefined) {
+  if ("output" in part && part.output !== undefined) {
     const content =
-      typeof part.output === 'string'
+      typeof part.output === "string"
         ? part.output
         : JSON.stringify(part.output, null, 2);
 
@@ -223,7 +236,7 @@ export function MessagePart({ part }: MessagePartProps) {
     );
   }
 
-  if (part.type === 'file') {
+  if (part.type === "file") {
     return (
       <div className="text-sm text-gray-600 wrap-break-word">
         ファイル: {part.filename ?? part.url}
@@ -237,4 +250,3 @@ export function MessagePart({ part }: MessagePartProps) {
     </pre>
   );
 }
-
