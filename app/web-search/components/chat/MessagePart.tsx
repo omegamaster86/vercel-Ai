@@ -188,6 +188,11 @@ const markdownComponents: Components = {
 };
 
 export function MessagePart({ part }: MessagePartProps) {
+  // 表示不要な内部イベント（ストリームのステップ情報など）はUIに出さない
+  if (typeof part.type === "string" && part.type.startsWith("step-")) {
+    return null;
+  }
+
   if (part.type === "text" || part.type === "reasoning") {
     return (
       <div className="prose prose-sm max-w-none">
