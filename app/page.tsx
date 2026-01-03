@@ -22,6 +22,11 @@ const tools: SidebarItem[] = [
     description: "updateTag を使った read-your-own-writes を確認するデモ",
     href: "/update-tag",
   },
+  {
+    title: "Function/Tool calling",
+    description: "天気取得や在庫検索をツールで実行するデモ",
+    href: "/tool-calling",
+  },
 ];
 
 export default function Home() {
