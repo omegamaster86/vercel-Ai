@@ -12,6 +12,18 @@ const google = process.env.GOOGLE_API_KEY
     })
   : null;
 
+function getTodayJapanString(now = new Date()): string {
+  const formatter = new Intl.DateTimeFormat('ja-JP', {
+    timeZone: 'Asia/Tokyo',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    weekday: 'short',
+  });
+
+  return formatter.format(now);
+}
+
 export async function POST(req: Request) {
   try {
     const { messages } = await req.json();
@@ -21,15 +33,27 @@ export async function POST(req: Request) {
       uiMessages.map(({ id, ...rest }) => rest)
     );
 
+    if (!google) {
+      return new Response(
+        JSON.stringify({
+          error: 'プロバイダが設定されていません',
+          details: 'GOOGLE_API_KEY を設定してください',
+        }),
+        { status: 500, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
     if (google) {
       try {
+        const todayJst = getTodayJapanString();
         const googleResult = streamText({
           model: google('gemini-2.0-flash-001'),
           messages: modelMessages,
+          system: `あなたは日本語で回答してください。今日（日本時間）は「${todayJst}」です。ユーザーが「今日」「本日」「明日」など相対的な日付表現を使った場合は、この日付を基準に解釈してください。`,
         });
 
         return googleResult.toUIMessageStreamResponse();
-      } catch (googleError) {
+      } catch {
         console.error('Google Generative AI 呼び出しに失敗しました');
       }
     }
@@ -51,6 +75,13 @@ export async function POST(req: Request) {
 
     // AI SDK UI互換のレスポンスを返却
     // return anthropicResult.toUIMessageStreamResponse();
+    return new Response(
+      JSON.stringify({
+        error: 'すべてのプロバイダ呼び出しに失敗しました',
+        details: 'Google Generative AI の呼び出しに失敗しました',
+      }),
+      { status: 500, headers: { 'Content-Type': 'application/json' } }
+    );
   } catch (error) {
     return new Response(
       JSON.stringify({ 
