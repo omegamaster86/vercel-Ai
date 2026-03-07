@@ -14,6 +14,28 @@ export type SidebarProps = {
   className?: string;
 };
 
+// アンケート回答管理画面の型
+export type SurveySummary = {
+  title: string;
+  durationMinutes: number;
+  rewardYen: number;
+  responseCount: number;
+  deadline: string;
+};
+
+export type SurveyResponse = {
+  id: string;
+  respondentName: string;
+  university: string;
+  grade: string;
+  faculty: string;
+  department: string;
+  answeredAt: string;
+  q1: string;
+  q2: string;
+  q3: string;
+};
+
 // ユーザー関連の型
 export type UserRecord = {
   id: string;
