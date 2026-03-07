@@ -1,29 +1,29 @@
-'use client';
+"use client";
 
-import { DefaultChatTransport } from 'ai';
-import { useChat } from '@ai-sdk/react';
-import { Suspense, useState, type ChangeEvent, type FormEvent } from 'react';
-import { ChatHeader } from './components/chat/ChatHeader';
-import { ChatEmptyState } from './components/chat/ChatEmptyState';
-import { ChatMessage } from './components/chat/ChatMessage';
-import { ChatLoadingIndicator } from './components/chat/ChatLoadingIndicator';
-import { ChatInputForm } from './components/chat/ChatInputForm';
+import { useChat } from "@ai-sdk/react";
+import { DefaultChatTransport } from "ai";
+import { Suspense, useState, type ChangeEvent, type FormEvent } from "react";
+import { ChatEmptyState } from "./components/chat/ChatEmptyState";
+import { ChatHeader } from "./components/chat/ChatHeader";
+import { ChatInputForm } from "./components/chat/ChatInputForm";
+import { ChatLoadingIndicator } from "./components/chat/ChatLoadingIndicator";
+import { ChatMessage } from "./components/chat/ChatMessage";
 
 const transport = new DefaultChatTransport({
-  api: '/api/chat',
+  api: "/api/chat",
 });
 
 function WebSearchChatContent() {
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState("");
   const { messages, sendMessage, status, error, clearError } = useChat({
     transport,
   });
 
-  const isLoading = status === 'submitted' || status === 'streaming';
+  const isLoading = status === "submitted" || status === "streaming";
   const errorMessage = error
     ? error instanceof Error
       ? error.message
-      : 'エラーが発生しました。'
+      : "エラーが発生しました。"
     : undefined;
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -34,7 +34,7 @@ function WebSearchChatContent() {
     }
 
     await sendMessage({ text: input });
-    setInput('');
+    setInput("");
   };
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -56,7 +56,7 @@ function WebSearchChatContent() {
           {messages.length === 0 ? (
             <ChatEmptyState
               title="何か質問してみてください"
-              examples={['例: 「最新のAI技術について検索して」']}
+              examples={["例: 「最新のAI技術について検索して」"]}
             />
           ) : null}
 
@@ -81,9 +81,14 @@ function WebSearchChatContent() {
 
 export default function WebSearchChatPage() {
   return (
-    <Suspense fallback={<div className="flex min-h-screen items-center justify-center">読み込み中...</div>}>
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center">
+          読み込み中...
+        </div>
+      }
+    >
       <WebSearchChatContent />
     </Suspense>
   );
 }
-
