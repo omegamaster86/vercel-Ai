@@ -27,6 +27,16 @@ const tools: SidebarItem[] = [
     description: "天気取得や在庫検索をツールで実行するデモ",
     href: "/tool-calling",
   },
+  {
+    title: "アンケート回答管理",
+    description: "管理画面の回答一覧テーブルUIを確認するデモ",
+    href: "/survey-results",
+  },
+  {
+    title: "Figma Carpe Diem",
+    description: "Figma Carpe Diemのデモ",
+    href: "/figma-carpe-diem",
+  },
 ];
 
 export default function Home() {
