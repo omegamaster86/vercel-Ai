@@ -53,7 +53,7 @@ export function RechartsRadarScoreRateDemo() {
         科目別の得点率
       </h2>
 
-      <div className="mx-auto mt-4 h-[520px] w-full max-w-[760px]">
+      <div className="mx-auto mt-4 h-[720px] w-full max-w-[760px]">
         <ResponsiveContainer width="100%" height="100%">
           <RadarChart
             cx="50%"
@@ -69,6 +69,7 @@ export function RechartsRadarScoreRateDemo() {
             />
             <PolarRadiusAxis
               domain={[0, 80]}
+              tickCount={10}
               tick={false}
               axisLine={false}
             />
@@ -76,7 +77,7 @@ export function RechartsRadarScoreRateDemo() {
             <Radar
               dataKey="background"
               stroke="none"
-              fill="#f4eecd"
+              fill="#FFFDEC"
               fillOpacity={0.55}
               dot={false}
               legendType="none"
