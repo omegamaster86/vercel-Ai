@@ -37,7 +37,7 @@ function WebSearchChatContent() {
     setInput("");
   };
 
-  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     if (error) {
       clearError();
     }

@@ -99,9 +99,10 @@ export type MessagePartProps = {
 export type ChatInputFormProps = {
   input: string;
   onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
   isLoading: boolean;
   errorMessage?: string;
+  submitOnEnter?: boolean;
 };
 
 export type ChatHeaderProps = {

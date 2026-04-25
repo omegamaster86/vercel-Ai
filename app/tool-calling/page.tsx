@@ -37,7 +37,7 @@ function ToolCallingChatContent() {
     setInput("");
   };
 
-  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     if (error) {
       clearError();
     }
@@ -77,6 +77,7 @@ function ToolCallingChatContent() {
         onChange={handleInputChange}
         isLoading={isLoading}
         errorMessage={errorMessage}
+        submitOnEnter={false}
       />
     </div>
   );

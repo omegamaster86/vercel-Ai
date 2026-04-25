@@ -6,16 +6,34 @@ export function ChatInputForm({
   onChange,
   isLoading,
   errorMessage,
+  submitOnEnter = true,
 }: ChatInputFormProps) {
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key !== "Enter") {
+      return;
+    }
+
+    const isModifierSubmit = event.metaKey || event.ctrlKey;
+    const shouldSubmitWithEnter = submitOnEnter && !event.shiftKey;
+
+    if (!isModifierSubmit && !shouldSubmitWithEnter) {
+      return;
+    }
+
+    event.preventDefault();
+    event.currentTarget.form?.requestSubmit();
+  };
+
   return (
     <footer className="border-t bg-white p-4">
       <form onSubmit={onSubmit} className="max-w-4xl mx-auto">
         <div className="flex gap-2">
-          <input
+          <textarea
             value={input}
             onChange={onChange}
+            onKeyDown={handleKeyDown}
             placeholder="メッセージを入力..."
-            className="flex-1 rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="flex-1 resize-none rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             disabled={isLoading}
           />
           <button
