@@ -27,11 +27,6 @@ const tools: SidebarItem[] = [
     description: "天気取得や在庫検索をツールで実行するデモ",
     href: "/tool-calling",
   },
-  {
-    title: "recharts 検証",
-    description: "recharts を使ったデモ",
-    href: "/recharts",
-  },
 ];
 
 export default function Home() {
