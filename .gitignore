@@ -41,3 +41,7 @@ yarn-error.log*
 next-env.d.ts
 
 .cursor/
+# Python (scripts/video_transcript)
+.venv/
+__pycache__/
+*.py[cod]
